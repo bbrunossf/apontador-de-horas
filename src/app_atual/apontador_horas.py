@@ -67,6 +67,23 @@ def carregar_config_banco():
     return parametros, schema
 
 
+# ---------------------------------------------------------------- domínio: etapas de trabalho
+# Etapas de trabalho registradas na tela 'Registre a Tarefa!'.
+# São excludentes: no máximo uma etapa por registro.
+# (nome da coluna na tabela "Registro", rótulo exibido na interface)
+ETAPAS_TRABALHO = (
+    ("trabalho_metalica", "Metálica"),
+    ("trabalho_concreto_armado", "Concreto armado"),
+    ("trabalho_pre_moldado", "Pré-moldado"),
+)
+
+# Valor usado no radiobutton "Não se aplica". NÃO pode ser string vazia: o índice
+# de tri-estado (tristatevalue) dos Radiobutton do Tk também é '' por padrão, e o Tk
+# considera o widget marcado quando o valor da variável é igual ao value OU ao
+# tristatevalue. Com value='', TODOS os radiobuttons do grupo apareceriam marcados.
+SEM_ETAPA = "SEM_ETAPA"
+
+
 class AboutDialog:
     def __init__(self, parent):
         self.dialog = tk.Toplevel(parent)
