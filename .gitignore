@@ -1,0 +1,21 @@
+# area com segredos e dados sensiveis - NUNCA versionar
+_NAO_PUBLICAR/
+config.ini
+.env
+.env.*
+!.env.example
+*.session
+*.log
+*.db
+*.sqlite
+*.sqlite3
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.exe
+.venv/
+venv/
+.venv/
+.idea/
+.vscode/

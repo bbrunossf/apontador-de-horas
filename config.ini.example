@@ -1,0 +1,20 @@
+; Copie este arquivo para "config.ini" (mesma pasta do executável) e preencha os dados.
+; O config.ini real NÃO vai para o repositório — está no .gitignore.
+
+[Database]
+host = localhost
+port = 5432
+database = apontador
+user = apontador_app
+password = COLOQUE_A_SENHA_AQUI
+; schema do PostgreSQL onde estão as tabelas "Obra", "Pessoa", "TipoTarefa",
+; "Categoria" e "Registro". Padrão: public
+schema = public
+
+[Settings]
+; intervalo do cronômetro, em minutos
+initial_time = 60
+
+[User]
+; nome da pessoa que aparece nos lançamentos (precisa existir em "Pessoa")
+name =
