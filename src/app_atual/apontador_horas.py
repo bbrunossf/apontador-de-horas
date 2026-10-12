@@ -15,7 +15,7 @@ Banco exigido: PostgreSQL com as tabelas "Obra", "Pessoa", "TipoTarefa",
 
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
-from datetime import datetime
+from datetime import datetime, timedelta
 import pg8000
 
 import configparser
@@ -32,7 +32,7 @@ import time
 # ---------------------------------------------------------------- identidade (whitelabel)
 APP_NOME = "Apontador de Horas"
 APP_VERSAO = "1.0.0"
-APP_AUTOR = "© 2026"          # ajuste para o nome do seu produto/empresa
+APP_AUTOR = "© 2026 Bruno Oliveira"   # ajuste para o nome do autor/produto
 
 
 def carregar_config_banco():
@@ -988,7 +988,7 @@ class CountdownTimer:
             'port': '5432',
             'schema': 'public'
             }
-            config['Settings'] = {'initial_time': '10'}
+            config['Settings'] = {'initial_time': '3600'}
             config['User'] = {'name': ''} 
             
             config['Window'] = {

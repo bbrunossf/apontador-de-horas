@@ -1,52 +1,58 @@
 # Scripts de criação do banco
 
-DDL gerado no **DBeaver** a partir do banco de origem (12/10/2026), um arquivo por tabela. Sem
-dados: nenhum `INSERT`, nenhum `COMMENT ON`, nenhum `GRANT`.
+DDL do **DBeaver** (gerado em 12/10/2026 a partir do banco de origem), **enxugado** para conter
+somente as colunas que o app usa. Sem dados: nenhum `INSERT`, nenhum `COMMENT ON`, nenhum `GRANT`.
 
 ## Ordem de execução
 
-As chaves estrangeiras são criadas por `ALTER TABLE` no fim de cada arquivo, então **a ordem
-importa**:
+As chaves estrangeiras entram por `ALTER TABLE` no fim do `Registro.sql`, então **a ordem importa**:
 
 ```
-1. Cliente.sql      (Obra referencia Cliente)
-2. TipoTarefa.sql
-3. Categoria.sql
-4. Pessoa.sql
-5. Obra.sql         (FK -> Cliente)
-6. Registro.sql     (FK -> Obra, Pessoa, TipoTarefa, Categoria)
+1. TipoTarefa.sql
+2. Categoria.sql
+3. Pessoa.sql
+4. Obra.sql
+5. Registro.sql     (FK -> Obra, Pessoa, TipoTarefa, Categoria)
 ```
 
-Todos os arquivos criam objetos no schema `public`. Se o banco usar outro schema, ajuste tanto o
-DDL quanto a chave `schema` do `config.ini`.
+Tudo no schema `public`. Se o banco usar outro schema, ajuste o DDL e a chave `schema` do
+`config.ini`.
+
+## O que foi enxugado
+
+| Tabela | Colunas mantidas | Colunas removidas do DDL completo |
+|---|---|---|
+| `"TipoTarefa"` | `id_tipo_tarefa`, `nome_tipo` | — |
+| `"Categoria"` | `id_categoria`, `nome_categoria` | — |
+| `"Pessoa"` | `id_nome`, `nome` | `funcao`, `email`, `data_criacao`, `ativo` |
+| `"Obra"` | `id_obra`, `cod_obra`, `nome_obra` | `id_cliente`, `data_inicio`, `total_horas_planejadas`, datas e observações de planejamento, `tipo_obra`, `finalizada`, `historico`, `criado_em`, `peso_informado_kg`, `peso_nao_aplicavel` |
+| `"Registro"` | as 11 usadas pelo app | `adicionado_bot` |
+| `"Cliente"` | **tabela inteira removida** | era referenciada só pela FK `Obra.id_cliente`, que saiu junto |
+
+Os DDL completos como o DBeaver gerou estão preservados em `../_NAO_PUBLICAR/origem-ddl/`, fora do
+repositório.
+
+## Duas decisões deliberadas neste DDL
+
+1. **`Obra.cod_obra` é `NOT NULL`** (no banco de origem aceita nulo). O app monta o rótulo do menu
+   com `cod_obra || ' - ' || nome_obra` e busca a obra por `cod_obra`; no PostgreSQL
+   `NULL || texto` é `NULL`, o que produziria linha vazia no menu e busca impossível. No banco de
+   origem nenhuma das obras está com código nulo, mas o schema permitia.
+2. **`Registro.duracao_minutos DEFAULT 60`** e **`hora_extra DEFAULT false`** foram mantidos como
+   no banco de origem — o app sempre envia os dois explicitamente, o default é só rede de segurança.
 
 ## Conferência contra o app
 
 | Verificação | Resultado |
 |---|---|
-| Toda coluna que o `apontador_horas.py` lê ou escreve existe no DDL? | **sim** — 5 tabelas, todas conferidas |
-| As 3 colunas de etapa (`trabalho_metalica`, `trabalho_concreto_armado`, `trabalho_pre_moldado`) existem? | **sim**, `bool NULL` — o `ALTER TABLE` previsto é desnecessário |
-| Arquivos das tabelas referenciadas por FK | todos presentes (inclusive `Cliente`, que só existe por causa do FK de `Obra`) |
+| Toda coluna que o `apontador_horas.py` lê ou escreve existe no DDL | **sim** (5 tabelas) |
+| As 3 colunas de etapa existem | **sim**, `bool NULL` |
+| Arquivos das tabelas referenciadas por FK | todos presentes |
 | Dado real nos scripts | nenhum |
 
-## Observações sobre o schema gerado
+## Pendências conhecidas do schema
 
-1. **Colunas que o app não usa** vieram junto, porque são do sistema completo: em `Obra`
-   (`id_cliente`, `data_inicio`, planejamento, `tipo_obra`, `finalizada`, `historico`,
-   `peso_informado_kg`, `peso_nao_aplicavel`), em `Pessoa` (`funcao`, `email`, `data_criacao`,
-   `ativo`) e em `Registro` (`adicionado_bot`). São inofensivas (`NULL`/`DEFAULT`), mas revelam o
-   desenho do sistema de origem — decidir na publicação se ficam ou se o schema é enxugado para o
-   mínimo que o app exige (a lista mínima está em `../docs/schema-do-banco.md`).
-2. **`cod_obra` é nullable e único** em `Obra`. O app monta o rótulo com
-   `cod_obra || ' - ' || nome_obra` — e no PostgreSQL `NULL || texto` resulta em **NULL**. Ou seja:
-   uma obra sem código aparece como **linha vazia** no menu, e o app depois faz
-   `split(' - ')[0]` nessa string vazia. Vale corrigir em um dos dois lados: preencher `cod_obra` no
-   banco (ou torná-la `NOT NULL`), ou usar `COALESCE` na consulta do app.
-3. **`Pessoa.ativo` existe mas o app não filtra por ele** — a lista de usuários traz também as
-   pessoas inativas (`SELECT nome FROM "Pessoa" ORDER BY nome`).
-4. **Sequências**: os `serial4` já criam as sequences necessárias; não há script extra de sequence.
-
-## Alteração deste DDL depois de publicado
-
-Se algum arquivo mudar, registre no `../MANIFESTO.md` (seção de arquivos criados/alterados nesta
-cópia) e confira de novo contra `../docs/schema-do-banco.md`.
+- **`Pessoa.ativo`**: o app lista todas as pessoas, sem filtrar as inativas.
+  No DDL enxuto a coluna não existe mais — se quiser o filtro depois, ela precisa voltar.
+- **Etapas de trabalho**: o app detecta as colunas em `information_schema` e funciona mesmo sem
+  elas; os lançamentos ficam com `NULL`.

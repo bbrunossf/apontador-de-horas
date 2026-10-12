@@ -12,8 +12,9 @@ password = COLOQUE_A_SENHA_AQUI
 schema = public
 
 [Settings]
-; intervalo do cronômetro, em minutos
-initial_time = 60
+; intervalo do cronometro, em SEGUNDOS (3600 = 1 hora).
+; A tela "Configuracoes > Configurar Tempo Inicial" pede em MINUTOS e converte.
+initial_time = 3600
 
 [User]
 ; nome da pessoa que aparece nos lançamentos (precisa existir em "Pessoa")

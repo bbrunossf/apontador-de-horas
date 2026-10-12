@@ -91,9 +91,19 @@ são os do `rev14.py`.
 
 - [x] Cópia da última versão, com hashes conferidos (`MANIFESTO.md`)
 - [x] Sanitização: sem marca, sem credencial, sem imports mortos
-- [x] **Sintaxe verificada** (`py_compile` OK) — a aplicação, porém, **não foi executada contra um
-      banco**: o Postgres de origem está numa rede privada à qual esta máquina não tem acesso
-- [ ] Scripts SQL de criação das tabelas (a gerar no **DBeaver** e salvar em `sql/`)
-- [ ] Teste real de execução + build do `.exe` numa máquina limpa
-- [ ] `LICENSE` (a definir: MIT, se for para uso aberto)
-- [ ] Decidir o nome definitivo do produto e o repositório público
+- [x] **Testado contra o banco de origem** (PostgreSQL 16.15, via VPN): conexão OK, 342 obras, 8
+      pessoas (com `Bruno`), 9 tipos de tarefa, 5 categorias, 28.926 lançamentos; as 3 colunas de
+      etapa detectadas. A própria classe `DatabaseManager` do app foi exercitada: `check_tables_exist()`
+      verdadeiro e as listas dos menus preenchidas, sem entradas vazias
+- [x] `LICENSE` (MIT)
+- [x] Scripts de criação das tabelas em `sql/`, enxugados para as colunas usadas
+- [ ] Build do `.exe` (Nuitka) numa máquina limpa — o passo a passo está em
+      [docs/como-gerar-executavel.md](docs/como-gerar-executavel.md)
+- [ ] Definir o nome do repositório público e publicá-lo
+
+## Detalhe de configuração que confunde
+
+O campo `initial_time` do `config.ini` é em **segundos** (o padrão é `3600`, uma hora). A tela
+*Configurações → Configurar Tempo Inicial* pede em **minutos** e converte ao salvar. Quem editar o
+arquivo na mão precisa saber disso — foi o que motivou este aviso.
+

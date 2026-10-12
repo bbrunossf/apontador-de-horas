@@ -17,6 +17,16 @@ Este app se conecta a um PostgreSQL da rede do escritório. A versão de origem 
 Nada disso estava em repositório **público**: o repo `plena` é privado. As chaves existem em texto
 claro no histórico do git dele e na pasta de trabalho local.
 
+## Endereço defasado no `config.ini` (descoberto no teste de conexão)
+
+O `config.ini` desta cópia trazia um endereço que **não responde** por esta VPN — não há rota para
+aquela faixa. O endereço correto é o mesmo que estava embutido no código antigo, e é o que está
+funcionando agora: alcançável pelo túnel `bruno-casa-final` (IP do túnel `10.8.0.4`).
+
+O teste de conexão confirmou o banco de produção: PostgreSQL 16.15, 342 obras, 8 pessoas, 9 tipos de
+tarefa, 5 categorias e 28.926 lançamentos. **O `config.ini` do repositório privado continua com o
+endereço antigo** — vale corrigir lá também, senão a próxima cópia repete o erro.
+
 ## O que foi feito nesta cópia
 
 1. **Credenciais fora do código.** O `rev14.py` sanitizado não tem nenhum dado de conexão: tudo vem

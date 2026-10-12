@@ -93,17 +93,83 @@ Não vêm da origem — foram escritos aqui, para transformar o app em produto p
 
 `_NAO_PUBLICAR/` está no `.gitignore` e nunca entra em repositório público.
 
-## Arquivos acrescentados depois da cópia (DDL do banco)
+## Arquivos acrescentados depois da cópia
 
-Gerados pelo autor no **DBeaver**, em 12/10/2026, a partir do banco PostgreSQL de origem (acesso por VPN). Não vêm do repositório: são um artefato novo deste laboratório.
+### DDL do banco (DBeaver, 12/10/2026)
 
-| # | Arquivo | Bytes | SHA-256 | Origem |
+| # | Arquivo | Bytes | SHA-256 | Situação |
 |---|---|---|---|---|
-| 1 | `sql/Cliente.sql` | 257 | `c36750de40c41408` | DBeaver, 12/10/2026 |
-| 2 | `sql/TipoTarefa.sql` | 253 | `b229374becff9696` | DBeaver, 12/10/2026 |
-| 3 | `sql/Categoria.sql` | 250 | `986f7681e2da5268` | DBeaver, 12/10/2026 |
-| 4 | `sql/Pessoa.sql` | 357 | `d795709dd4e234bd` | DBeaver, 12/10/2026 |
-| 5 | `sql/Obra.sql` | 975 | `950f870b4eff0640` | DBeaver, 12/10/2026 |
-| 6 | `sql/Registro.sql` | 1349 | `a7f7a0211c114c61` | DBeaver, 12/10/2026 |
+| 1 | `sql/TipoTarefa.sql` | 356 | `8345eb22fadb63db` | enxugado |
+| 2 | `sql/Categoria.sql` | 358 | `a9bc5392447c077f` | enxugado |
+| 3 | `sql/Pessoa.sql` | 460 | `ccbe005105a14690` | enxugado |
+| 4 | `sql/Obra.sql` | 855 | `b1b1c28456c56be6` | enxugado |
+| 5 | `sql/Registro.sql` | 1674 | `a20886668c5c8107` | enxugado |
 
-Conferência: todas as colunas usadas pelo app existem no DDL; as três colunas de etapa já vêm no `CREATE TABLE` (o `ALTER TABLE` previsto é desnecessário). Detalhes em `sql/LEIA-ME.md`.
+Os seis arquivos como o DBeaver os gerou (incluindo `Cliente.sql`, que saiu do conjunto) estão
+preservados em `_NAO_PUBLICAR/origem-ddl/`, fora do repositório. O que foi enxugado, por tabela,
+está em `sql/LEIA-ME.md`.
+
+### Demais arquivos criados por último
+
+| Arquivo | Bytes | SHA-256 | Papel |
+|---|---|---|---|
+| `LICENSE` | 1071 | `364407ed12e3df47` | MIT, Copyright (c) 2026 Bruno Oliveira |
+
+## Histórico de alterações desta cópia
+
+| # | Quando | Alteração | Por quê |
+|---|---|---|---|
+| 1 | 12/10/2026 16:32 | `rev14.py` → `apontador_horas.py`, com marca e credenciais fora do código | produto whitelabel publicável |
+| 2 | 12/10/2026 16:32 | `timedelta` **reposto** no import do `datetime` | eu o havia removido por engano: meu verificador procurava `timedelta.` (acesso a atributo), mas ele é usado como **chamada** (`timedelta(minutes=...)`), 7 vezes. O `py_compile` passou; só a **execução** do app revelou o `NameError` |
+| 3 | 12/10/2026 16:32 | default de `initial_time` no código: `'10'` → `'3600'` | sem `config.ini`, o app criava o arquivo com **10 segundos** de intervalo — e a interface pediria um lançamento a cada 10 s |
+| 4 | 12/10/2026 16:32 | `APP_AUTOR` = `© 2026 Bruno Oliveira` | preencher o rodapé do "Sobre" (era só `© 2026`) |
+| 5 | 12/10/2026 16:32 | `config.ini.example`: `initial_time` documentado como **segundos** (3600) | o exemplo dizia "em minutos" e trazia 60 — daria 1 minuto em vez de 1 hora |
+| 6 | 12/10/2026 16:32 | DDL enxugado para as colunas usadas (6 → 5 arquivos) | decisão do autor: publicar só o que o app exige |
+| 7 | 12/10/2026 16:32 | `LICENSE` criado | publicação com licença explícita |
+
+## Verificação contra o banco de origem
+
+Executada em 12/10/2026 16:32, com a VPN ativa, usando o `config.ini` desta cópia (host que responde pela
+VPN) e a **própria classe `DatabaseManager` do app**:
+
+| Verificação | Resultado |
+|---|---|
+| Conexão | PostgreSQL 16.15 (Ubuntu 24.04) |
+| `check_tables_exist()` | verdadeiro |
+| `get_all_projects()` | 342 obras, **0 entradas vazias** |
+| `get_user_names()` | 8 pessoas, incluindo `Bruno` |
+| `get_categorias()` | 5 |
+| Colunas de etapa detectadas em `information_schema` | as 3 |
+| `"Registro"` | 28.926 lançamentos |
+
+A interface foi aberta conectada a esse banco: janela "Apontador de Horas", cronômetro em contagem
+regressiva de 1 hora (60:00), sem diálogo de erro de conexão.
+
+## Hashes atuais dos arquivos publicáveis
+
+| Arquivo | SHA-256 |
+|---|---|
+| `.gitignore` | `301b1c18995597258ee2ee88f7b92f723804ac4be68ed57bda8a1838009f0af4` |
+| `MANIFESTO.md` | `2c485dc1fd13bfcbba0d04bc4f5d4163c827d7e927e6791d7c3a64fd6889c84b` |
+| `README.md` | `f5b93bfad12bfac93611fbfd82a503d6b543cec69420a237b96aba1b0ffa35d9` |
+| `SECURITY.md` | `07c142c772776bcb3b73dfc25a7a28e9ad189694fe6cf9d840adc819ee092fbc` |
+| `config.ini.example` | `f0c6aa9f622824debd18b598282b70846195e9d5bb10dfcfb8beac921fcb39ba` |
+| `docs/bruto/README-versao-sqlite.md` | `12205d6d8e9629da4c50291f1fe82f9e944005edce9d363a659b7ea3bf4d4463` |
+| `docs/bruto/tutorial-nuitka.md` | `39eaf245770e1bed146a83e44009dcfed20d033e0e11760d281d4c8272a79bfd` |
+| `docs/como-gerar-executavel.md` | `3a247ebd26fb0ed92ec7bc25eac7527fb67af4e7613e293586d91d98e1684cf3` |
+| `docs/diagramas/esquema.png` | `fd3be9d7ea6785467542e6c32433d9b8aadaecc54189d71d40d6a6b85074a74e` |
+| `docs/diagramas/esquema2.svg` | `4835895706f3533d6db82eb709e962035ce6d03d31f129f1b316b6b9826a166f` |
+| `docs/diagramas/esquema3.svg` | `766a8d92bc10642a6aa7644e021702902fa44d76193e5eaf4d181f8d9b2b46e9` |
+| `docs/diagramas/imagem.png` | `ff8fe30b34edc2355ebfec5300fc21f1db414542c76949e5833d58fc9bdbeb2b` |
+| `docs/por-que-pg8000.md` | `c11c505989713e7c8b389a600cf1436ac3b2440cc5cb333ea6032a8f871a800d` |
+| `docs/schema-do-banco.md` | `1d938532a8b80387474bfb95d387f6748680b66a18d5e81fb18c0efe02410b10` |
+| `requirements.txt` | `6c4055fc2268585ecae2ef288601d66a70b115fe650bf3538cd1fef9509e751a` |
+| `sql/Categoria.sql` | `a9bc5392447c077f9aa3d907d842d71efab0acb558bce0d1de2c172f167c7976` |
+| `sql/LEIA-ME.md` | `50b75a6559b57160e9e102f45939209afd66a627b67d6710cc5bff0f6d62817a` |
+| `sql/Obra.sql` | `b1b1c28456c56be63d6a72a921551c8433cb0fbb295534aecb6d2e4bf2bd52f6` |
+| `sql/Pessoa.sql` | `ccbe005105a146906e1a7ea4f1666ec7d09eb0d184219003c6744057458009ff` |
+| `sql/Registro.sql` | `a20886668c5c8107eeb6d0ad6368a27229a992af5db8b370a431d81643f8c36a` |
+| `sql/TipoTarefa.sql` | `8345eb22fadb63db2e44b0e32abe8a56eb2e1330e320bd70b99e1cfbad0b95aa` |
+| `src/app_atual/apontador_horas.py` | `f96f61e61d4b51973df3b270c216a001cce92142cb541507551bd306d8a1ca17` |
+| `src/app_atual/icone.ico` | `bd47f8365649046e211baf9df6a7734b2cb727cd891157edae03ce03eee9b350` |
+| `src/app_atual/make_ico.py` | `a7aded2a20a2129f58fd94483a84dab23d024eed32ce28ff1928fe4aad66aee2` |
