@@ -16,6 +16,11 @@ o motivo de cada opção. A aplicação vira **um único `.exe`** com o [Nuitka]
 
 ## Comando
 
+O caminho normal no repositório é `python build.py` (ou `build.bat`): ele monta este comando
+sozinho, lendo `APP_NOME`/`APP_VERSAO` do código e nomeando a saída como
+`apontador_horas_v<versão>.exe`. O comando manual abaixo fica para quem quiser entender as opções,
+ajustar algo ou compilar sem o script.
+
 ```bash
 nuitka --standalone --onefile --enable-plugin=tk-inter --windows-console-mode=disable \
        --include-data-file=icone.ico=icone.ico --windows-icon-from-ico=icone.ico \

@@ -43,8 +43,20 @@ veja **[docs/schema-do-banco.md](docs/schema-do-banco.md)** e os scripts em `sql
 
 ## Como gerar o `.exe`
 
-**[docs/como-gerar-executavel.md](docs/como-gerar-executavel.md)** — passo a passo com Nuitka,
-explicação de cada opção, assinatura do executável e as armadilhas conhecidas.
+**Este repositório publica apenas o código-fonte.** Nenhum binário é versionado — nem executável,
+nem `build/`, nem `dist/` (estão no `.gitignore`). Quem quiser o executável compila na própria
+máquina:
+
+```bash
+python build.py            # ou: build.bat
+```
+
+O `build.py` lê `APP_NOME`/`APP_VERSAO` do próprio código e monta o comando do Nuitka — a versão do
+executável é a mesma que aparece na tela "Sobre" (não existe mais o "lembrar de mudar a versão antes
+de compilar"). Para ver o comando sem compilar: `python build.py --dry-run`.
+
+O passo a passo completo (requisitos, cada opção explicada, assinatura e armadilhas) está em
+**[docs/como-gerar-executavel.md](docs/como-gerar-executavel.md)**.
 
 ## Por que pg8000
 
@@ -60,6 +72,7 @@ lab_apontador_horas/
 ├── src/app_atual/make_ico.py          # utilitário que gerou o .ico a partir de uma imagem
 ├── config.ini.example                 # modelo de configuração (o config.ini real é ignorado pelo git)
 ├── requirements.txt                   # pg8000
+├── build.py / build.bat               # geram o executável com Nuitka (nenhum binário é versionado)
 ├── docs/
 │   ├── schema-do-banco.md             # tabelas e colunas que o app exige
 │   ├── como-gerar-executavel.md       # build do .exe (Nuitka)
