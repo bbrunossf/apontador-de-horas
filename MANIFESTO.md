@@ -92,3 +92,18 @@ Não vêm da origem — foram escritos aqui, para transformar o app em produto p
 | `_NAO_PUBLICAR/logs/app.log` | log com nomes de obra e de pessoas | **não** |
 
 `_NAO_PUBLICAR/` está no `.gitignore` e nunca entra em repositório público.
+
+## Arquivos acrescentados depois da cópia (DDL do banco)
+
+Gerados pelo autor no **DBeaver**, em 12/10/2026, a partir do banco PostgreSQL de origem (acesso por VPN). Não vêm do repositório: são um artefato novo deste laboratório.
+
+| # | Arquivo | Bytes | SHA-256 | Origem |
+|---|---|---|---|---|
+| 1 | `sql/Cliente.sql` | 257 | `c36750de40c41408` | DBeaver, 12/10/2026 |
+| 2 | `sql/TipoTarefa.sql` | 253 | `b229374becff9696` | DBeaver, 12/10/2026 |
+| 3 | `sql/Categoria.sql` | 250 | `986f7681e2da5268` | DBeaver, 12/10/2026 |
+| 4 | `sql/Pessoa.sql` | 357 | `d795709dd4e234bd` | DBeaver, 12/10/2026 |
+| 5 | `sql/Obra.sql` | 975 | `950f870b4eff0640` | DBeaver, 12/10/2026 |
+| 6 | `sql/Registro.sql` | 1349 | `a7f7a0211c114c61` | DBeaver, 12/10/2026 |
+
+Conferência: todas as colunas usadas pelo app existem no DDL; as três colunas de etapa já vêm no `CREATE TABLE` (o `ALTER TABLE` previsto é desnecessário). Detalhes em `sql/LEIA-ME.md`.
