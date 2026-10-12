@@ -129,6 +129,9 @@ está em `sql/LEIA-ME.md`.
 
 | 8 | 12/10/2026 17:43 | `ETAPAS_TRABALHO` e `SEM_ETAPA` **restaurados** | apagados por engano na correção anterior: o script substituiu um trecho por **fatia** (`texto[:ini] + novo + texto[fim:]`) e o intervalo engolia as duas constantes, que viviam entre os imports e a primeira classe. **Efeito:** a janela "Registre a Tarefa!" morria no meio da construção — no Tk a exceção é engolida e a janela fica pela metade, com os widgets criados **antes** da falha visíveis. Só o dropdown de projeto aparecia; tarefa e categoria (criados depois) não existiam. Relatado pelo autor ao usar o app |
 
+| 9 | 12/10/2026 17:54 | "Time Tracker" → `APP_NOME` no diálogo "Sobre" | marca esquecida: o título dentro do diálogo tinha o nome antigo do app. A varredura de identidade procurava a marca do cliente ("Plena") e o nome pessoal, mas **não o nome anterior do próprio app** — que é exatamente onde a marca se esconde depois de um rename |
+| 10 | 12/10/2026 17:54 | Telas do app capturadas para o README (`docs/imagens/`) | geradas com a aplicação em execução contra o banco de origem, capturadas por `PrintWindow` (só a janela, sem o que está atrás) e com **dados fictícios** no campo de projeto |
+
 ## Verificação contra o banco de origem
 
 Executada em 12/10/2026 16:32, com a VPN ativa, usando o `config.ini` desta cópia (host que responde pela
@@ -205,3 +208,23 @@ Depois do conserto, a janela foi montada de verdade contra o banco de origem e c
 
 O caminho de gravação resolvendo os ids por consulta (sem escrever nada): `id_obra` 211,
 `id_tipo_tarefa` 8, `id_categoria` 3, `id_nome` 5 (Bruno).
+
+## Telas publicadas no README (12/10/2026 17:54)
+
+| Arquivo | Tamanho | O que mostra |
+|---|---|---|
+| `docs/imagens/principal.png` | 416x239 | cronômetro em contagem, menu e botões Pause/Reset |
+| `docs/imagens/registrar-tarefa.png` | 316x459 | a tela "Registre a Tarefa!" com projeto (fictício), etapa, tarefa, subtarefa (categoria) e hora extra |
+| `docs/imagens/sobre.png` | 316x219 | "Sobre": nome, versão e autoria vindos das constantes |
+
+Como foram feitas (ferramentas guardadas em `_NAO_PUBLICAR/`, fora do repositório):
+
+1. `abre_janela.py <principal|tarefa|sobre>` monta **uma** janela por vez com o banco real e fica
+   no `mainloop`. Dois detalhes que custaram tentativas: a janela principal **é** o `root` (não pode
+   ser escondida), e as janelas `transient` ficam invisíveis se o pai estiver `withdrawn` — o root
+   vai para fora da tela (`1x1+-3000+-3000`) em vez de ser escondido.
+2. `captura_limpa.ps1 -Titulo "<titulo da janela>" -Saida <png>` acha a janela por `EnumWindows`
+   (o `FindWindow` não encontra esses Toplevel do Tk) e captura com `PrintWindow` + `PW_RENDERFULLCONTENT`,
+   que renderiza **só a janela** — sem o papel de parede aparecendo nas bordas da sombra.
+
+Nenhuma escrita foi feita no banco durante as capturas.

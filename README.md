@@ -29,6 +29,20 @@ ficaram no repositório privado, íntegras e intactas.
 - **Reconexão**: se o banco estiver fora, abre um diálogo de nova tentativa em vez de fechar.
 - **Configurações** salvas em `config.ini` (usuário, intervalo, posição da janela).
 
+## Telas
+
+| Cronômetro | Registro do lançamento |
+|---|---|
+| ![Tela principal do Apontador de Horas](docs/imagens/principal.png) | ![Janela Registre a Tarefa](docs/imagens/registrar-tarefa.png) |
+
+O diálogo "Sobre" — nome, versão e autoria vêm de constantes no topo do código, então nunca
+divergem do executável:
+
+![Diálogo Sobre](docs/imagens/sobre.png)
+
+> As imagens foram geradas a partir da aplicação em execução. O campo de projeto aparece com um
+> nome **fictício** de exemplo — os dados reais de obra e de pessoa não são publicados.
+
 ## Como rodar
 
 ```bash
@@ -78,6 +92,7 @@ lab_apontador_horas/
 │   ├── como-gerar-executavel.md       # build do .exe (Nuitka)
 │   ├── por-que-pg8000.md              # decisão do driver
 │   ├── diagramas/                     # esquema do banco (png/svg) e imagem do app
+│   ├── imagens/                       # telas do app usadas no README
 │   └── bruto/                         # material de origem ainda não tratado
 ├── sql/                               # scripts de criação do banco (ver LEIA-ME)
 ├── MANIFESTO.md                       # auditoria da cópia (hashes)

@@ -109,7 +109,7 @@ class AboutDialog:
         # Application name and version
         tk.Label(
             self.dialog,
-            text="Time Tracker",
+            text=APP_NOME,
             font=("Arial", 16, "bold")
         ).pack(pady=10)
         
