@@ -127,6 +127,8 @@ está em `sql/LEIA-ME.md`.
 | 6 | 12/10/2026 16:32 | DDL enxugado para as colunas usadas (6 → 5 arquivos) | decisão do autor: publicar só o que o app exige |
 | 7 | 12/10/2026 16:32 | `LICENSE` criado | publicação com licença explícita |
 
+| 8 | 12/10/2026 17:43 | `ETAPAS_TRABALHO` e `SEM_ETAPA` **restaurados** | apagados por engano na correção anterior: o script substituiu um trecho por **fatia** (`texto[:ini] + novo + texto[fim:]`) e o intervalo engolia as duas constantes, que viviam entre os imports e a primeira classe. **Efeito:** a janela "Registre a Tarefa!" morria no meio da construção — no Tk a exceção é engolida e a janela fica pela metade, com os widgets criados **antes** da falha visíveis. Só o dropdown de projeto aparecia; tarefa e categoria (criados depois) não existiam. Relatado pelo autor ao usar o app |
+
 ## Verificação contra o banco de origem
 
 Executada em 12/10/2026 16:32, com a VPN ativa, usando o `config.ini` desta cópia (host que responde pela
@@ -173,3 +175,33 @@ regressiva de 1 hora (60:00), sem diálogo de erro de conexão.
 | `src/app_atual/apontador_horas.py` | `f96f61e61d4b51973df3b270c216a001cce92142cb541507551bd306d8a1ca17` |
 | `src/app_atual/icone.ico` | `bd47f8365649046e211baf9df6a7734b2cb727cd891157edae03ce03eee9b350` |
 | `src/app_atual/make_ico.py` | `a7aded2a20a2129f58fd94483a84dab23d024eed32ce28ff1928fe4aad66aee2` |
+
+## Como este defeito foi encontrado (e como não repetir)
+
+O autor abriu a tela de apontamento e viu **só o campo de projeto**. Sintoma de "janela pela
+metade" não é problema de dados: é exceção durante a montagem da interface. A reprodução foi
+headless — instanciar a janela num `tk.Tk()` com `withdraw()` e ler `widget['values']` de cada
+campo — e o `NameError: name 'SEM_ETAPA' is not defined` apareceu na hora (a causa já era
+conhecida da verificação anterior, mas não do uso).
+
+O que provou o tamanho do estrago foi a comparação da **AST** dos dois arquivos
+(`_NAO_PUBLICAR/origem/rev14.py` contra `src/app_atual/apontador_horas.py`, colhendo
+`FunctionDef`, `ClassDef` e `Assign`): nome perdido, zero — 6 classes, 55 funções e as constantes
+do whitelabel. Sem isso, a busca seria no escuro.
+
+Regra que ficou desta cópia: **edição por fatia exige conferir o intervalo**, e a integridade se
+confere por nome (AST), não por leitura.
+
+## Verificação do estado atual (12/10/2026 17:43)
+
+Depois do conserto, a janela foi montada de verdade contra o banco de origem e cada campo lido:
+
+| Campo | Opções | Observação |
+|---|---|---|
+| projeto | 342 | itens são texto limpo (`000 - PLANEJAMENTO`) |
+| tarefa | 9 | restaura a tarefa do último lançamento |
+| categoria | 5 | preenche ao escolher a tarefa |
+| etapa | 4 (3 + "não se aplica") | `ETAPAS_TRABALHO` + `SEM_ETAPA` |
+
+O caminho de gravação resolvendo os ids por consulta (sem escrever nada): `id_obra` 211,
+`id_tipo_tarefa` 8, `id_categoria` 3, `id_nome` 5 (Bruno).
